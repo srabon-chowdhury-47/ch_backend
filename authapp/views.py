@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 @api_view(['GET'])
 def hello_world(request):
-    return Response({"message": "Hello, React!"})
+    return Response({"message": "Hello, React! I am Joydip"})
 
 
 def home(request):
