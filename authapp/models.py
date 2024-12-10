@@ -54,4 +54,4 @@ class HonourBoard(models.Model):
     designation_type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='DC') 
 
     def __str__(self):
-        return f"{self.name} - {self.type}"
+        return f"{self.name} - {self.designation_type}"
