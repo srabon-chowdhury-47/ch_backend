@@ -49,7 +49,7 @@ class HonourBoard(models.Model):
     batch = models.CharField(max_length=50)
     joining_date = models.DateField()
     ending_date = models.DateField()
-    photo = models.ImageField(upload_to='img/')
+    photo = models.ImageField(upload_to='img/',blank=True,null=True)
     remarks = models.TextField(blank=True, null=True)
     designation_type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='DC') 
 

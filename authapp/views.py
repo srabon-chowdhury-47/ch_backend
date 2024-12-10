@@ -1,11 +1,13 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.shortcuts import render
+from rest_framework import generics
+from .models import HonourBoard
+from .serializers import HonourBoardSerializer
 
-@api_view(['GET'])
-def hello_world(request):
-    return Response({"message": "Hello, React! I am Joydip"})
+# List and Create HonourBoard entries
+class HonourBoardListCreateView(generics.ListCreateAPIView):
+    queryset = HonourBoard.objects.all()
+    serializer_class = HonourBoardSerializer
 
-
-def home(request):
-    return render(request, 'Home/home.html')
+# Retrieve, Update, and Delete a specific HonourBoard entry
+class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = HonourBoard.objects.all()
+    serializer_class = HonourBoardSerializer
