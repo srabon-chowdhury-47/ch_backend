@@ -3,12 +3,12 @@ from django.contrib.auth.models import AbstractUser
 from datetime import date
 
 # Users Table
-class UserProfile(AbstractUser):
+class User(AbstractUser):
     ROLE_CHOICES = [
         ('NDC', 'NDC'),
         ('Staff', 'Staff'),
     ]
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES,default='Staff',blank=True,null=True)
     is_approved = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='img/', blank=True, null=True)
 
