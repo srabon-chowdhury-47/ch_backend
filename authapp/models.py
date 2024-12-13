@@ -6,9 +6,10 @@ from datetime import date
 class User(AbstractUser):
     ROLE_CHOICES = [
         ('NDC', 'NDC'),
-        ('Staff', 'Staff'),
+        ('Assistant Accountant', 'Assistant Accountant'),
     ]
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES,default='Staff',blank=True,null=True)
+    role = models.CharField(max_length=40, choices=ROLE_CHOICES,default='Assistant Accountant',blank=True,null=True)
+    # designation = models.CharField(max_length=255)
     is_approved = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='img/', blank=True, null=True)
 
