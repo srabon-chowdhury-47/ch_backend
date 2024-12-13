@@ -11,6 +11,8 @@ from .models import HonourBoard
 from .serializers import*
 from rest_framework.permissions import BasePermission
 User=get_user_model()
+from rest_framework.permissions import IsAuthenticated
+
 
 
 class IsAdmin(BasePermission):
@@ -43,3 +45,15 @@ class StaffApproveView(generics.RetrieveUpdateDestroyAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+class PasswordChangeView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self, request):
+            serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
+            if serializer.is_valid():
+                # Change password logic
+                request.user.set_password(serializer.validated_data['new_password'])
+                request.user.save()
+                return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

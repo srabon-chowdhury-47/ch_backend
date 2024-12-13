@@ -3,7 +3,8 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
-
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 class HonourBoardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,6 +37,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Password doesn't match")
         return data
 
+        try:
+            validate_password(data['password'])
+        except ValidationError as e:
+            raise serializers.ValidationError({"password":e.messages})
+
     def create(self,validated_data):
         validated_data.pop('confirm_password')
         User=get_user_model()
@@ -67,3 +73,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise AuthenticationFailed("Your account has not been approved yet.")
 
         return data
+
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password=serializers.CharField(required=True)
+    new_password=serializers.CharField(required=True,validators=[validate_password])
+
+    def validate_old_password(self,value):
+        user=self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is incorrect")
+        return value
