@@ -61,7 +61,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class StaffApproveSerializer(serializers.ModelSerializer):    
     class Meta:
         model=get_user_model()
-        fields=('username','email','is_approved','role')
+        fields=('id','username','email','is_approved','role')
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -83,3 +83,4 @@ class PasswordChangeSerializer(serializers.Serializer):
         if not user.check_password(value):
             raise serializers.ValidationError("Old password is incorrect")
         return value
+
