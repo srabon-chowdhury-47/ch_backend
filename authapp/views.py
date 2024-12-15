@@ -11,7 +11,7 @@ from .models import HonourBoard
 from .serializers import*
 from rest_framework.permissions import BasePermission
 User=get_user_model()
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 
 
 class IsAdmin(BasePermission):
@@ -59,9 +59,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 class PasswordChangeView(APIView):
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[AllowAny]
 
-    def post(self, request):
+    def put(self, request):
             serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
                 # Change password logic
