@@ -22,7 +22,7 @@ class IsAdmin(BasePermission):
 
 # List and Create HonourBoard entries
 class HonourBoardListCreateView(generics.ListCreateAPIView):
-    queryset = HonourBoard.objects.all()
+    queryset = HonourBoard.objects.all().order_by('-joining_date')
     serializer_class = HonourBoardSerializer
 
 # Retrieve, Update, and Delete a specific HonourBoard entry
@@ -30,8 +30,18 @@ class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HonourBoard.objects.all()
     serializer_class = HonourBoardSerializer
 
-class UserRegistrationView(generics.CreateAPIView):
-    serializer_class=UserRegistrationSerializer
+class UserRegistrationView(APIView):
+    def post(self, request, *args, **kwargs):
+        # Log the received data
+        print("Received data:", request.data)
+
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Registration successful"}, status=status.HTTP_201_CREATED)
+        else:
+            print("Errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class StaffListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -69,3 +79,13 @@ class PasswordChangeView(APIView):
                 request.user.save()
                 return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]  
+    
+    def get(self, request):
+        user = request.user 
+        print(user.role)
+        serializer = UserProfileSerializer(user) 
+        return Response(serializer.data)

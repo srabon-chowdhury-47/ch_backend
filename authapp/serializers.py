@@ -1,10 +1,12 @@
-from .models import HonourBoard
+from .models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import check_password
+
 
 class HonourBoardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -75,28 +77,31 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 class PasswordChangeSerializer(serializers.Serializer):
-    current_password = serializers.CharField(write_only=True)
-    new_password = serializers.CharField(write_only=True)
-    confirm_new_password = serializers.CharField(write_only=True)
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_new_password = serializers.CharField(required=True)
 
     def validate(self, data):
         user = self.context['request'].user
-        
+
+        # Validate current password
         if not check_password(data['current_password'], user.password):
-            raise serializers.ValidationError({"current_password": "Current password is incorrect."})
+            raise serializers.ValidationError({"current_password": "Current password is incorrect"})
 
+        # Validate new password and confirmation match
         if data['new_password'] != data['confirm_new_password']:
-            raise serializers.ValidationError({"new_password": "New passwords do not match."})
+            raise serializers.ValidationError({"new_password": "New passwords do not match"})
 
+        # Validate password complexity
         try:
             validate_password(data['new_password'], user=user)
-        except ValidationError as e:
+        except serializers.ValidationError as e:
             raise serializers.ValidationError({"new_password": e.messages})
 
         return data
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'role', 'is_approved', 'profile_picture']
 
-    def save(self):
-        user = self.context['request'].user
-        user.set_password(self.validated_data['new_password'])
-        user.save()
-        return user
