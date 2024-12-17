@@ -83,12 +83,8 @@ class PasswordChangeSerializer(serializers.Serializer):
         if not user.check_password(value):
             raise serializers.ValidationError("Old password is incorrect")
         return value
-<<<<<<< HEAD
     
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'role', 'is_approved', 'profile_picture']
-=======
-
->>>>>>> 9de8c9f73bc8184b8f82ed546210b5dcbfe8a6c7
