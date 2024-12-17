@@ -5,6 +5,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import check_password
+
 
 class HonourBoardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -75,14 +77,28 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 class PasswordChangeSerializer(serializers.Serializer):
-    old_password=serializers.CharField(required=True)
-    new_password=serializers.CharField(required=True,validators=[validate_password])
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_new_password = serializers.CharField(required=True)
 
-    def validate_old_password(self,value):
-        user=self.context['request'].user
-        if not user.check_password(value):
-            raise serializers.ValidationError("Old password is incorrect")
-        return value
+    def validate(self, data):
+        user = self.context['request'].user
+
+        # Validate current password
+        if not check_password(data['current_password'], user.password):
+            raise serializers.ValidationError({"current_password": "Current password is incorrect"})
+
+        # Validate new password and confirmation match
+        if data['new_password'] != data['confirm_new_password']:
+            raise serializers.ValidationError({"new_password": "New passwords do not match"})
+
+        # Validate password complexity
+        try:
+            validate_password(data['new_password'], user=user)
+        except serializers.ValidationError as e:
+            raise serializers.ValidationError({"new_password": e.messages})
+
+        return data
     
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
