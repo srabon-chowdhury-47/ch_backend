@@ -27,8 +27,9 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['chjashore.online', '*']
+DEBUG = False
+# DEBUG = True
+ALLOWED_HOSTS = ['chjashore.online', 'localhost', '86.48.3.219']
 AUTH_USER_MODEL = 'authapp.User'
 
 # settings.py
@@ -81,6 +82,8 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://chjashore.online",
+    "http://chjashore.online"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -109,23 +112,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'CircuitHouse',
-#         'USER': 'ndcjashore',
-#         'PASSWORD': '123456NdcJ',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'CircuitHouse',
+        'USER': 'ndcjashore1',
+        'PASSWORD': '123456NdcJ',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 
 # Password validation
