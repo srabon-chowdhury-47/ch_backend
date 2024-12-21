@@ -27,9 +27,9 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-# DEBUG = True
-ALLOWED_HOSTS = ['chjashore.online', 'localhost', '86.48.3.219']
+# DEBUG = False
+DEBUG = True
+ALLOWED_HOSTS = ['chjashore.online', 'localhost', '86.48.3.219','127.0.0.1']
 AUTH_USER_MODEL = 'authapp.User'
 
 # settings.py
@@ -112,23 +112,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'CircuitHouse',
-        'USER': 'ndcjashore1',
-        'PASSWORD': '123456NdcJ',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'CircuitHouse',
+#         'USER': 'ndcjashore1',
+#         'PASSWORD': '123456NdcJ',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -174,3 +174,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # or any path you prefer
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_USE_TLS = True
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = 'niloydas01910@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'pevg ferq sret ppgt'
+

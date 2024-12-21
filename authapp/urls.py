@@ -10,5 +10,6 @@ urlpatterns = [
     path('approve_staff/<int:pk>/', StaffApproveView.as_view(), name='approve-staff'),
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('change-password/',PasswordChangeView.as_view(),name='change-password'),
-    path('user/', UserProfileView.as_view(), name='user-profile')
+    path('user/', UserProfileView.as_view(), name='user-profile'),
+    path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
 ]
