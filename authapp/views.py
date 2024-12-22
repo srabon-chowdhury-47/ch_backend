@@ -12,12 +12,17 @@ from .serializers import*
 from rest_framework.permissions import BasePermission
 User=get_user_model()
 from rest_framework.permissions import IsAuthenticated,AllowAny
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
 
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        print(f"User Role: {request.user.role}")  # Debugging output to check the role of the user
         return request.user.is_authenticated and request.user.role == 'NDC'
+
 
 
 # List and Create HonourBoard entries
@@ -48,7 +53,7 @@ class StaffListCreateView(generics.ListCreateAPIView):
     serializer_class = StaffApproveSerializer
 
 class StaffApproveView(generics.UpdateAPIView):
-    permission_classes = [IsAdmin] 
+    # permission_classes = [IsAdmin] 
     queryset = User.objects.all()
     serializer_class = StaffApproveSerializer
 
@@ -89,3 +94,30 @@ class UserProfileView(APIView):
         print(user.role)
         serializer = UserProfileSerializer(user) 
         return Response(serializer.data)
+    
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        print(email)
+
+        if not email:
+            raise ValidationError("Email is required.")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise ValidationError("User with this email does not exist.")
+
+        # Generate a token for the password reset
+        token = default_token_generator.make_token(user)
+
+        # Send email with password reset link
+        reset_url = f"http://{get_current_site(request).domain}/reset-password/{urlsafe_base64_encode(user.pk.encode())}/{token}/"
+        send_mail(
+            subject="Password Reset Request",
+            message=f"Click the link below to reset your password:\n{reset_url}",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+        )
+
+        return Response({"message": "Password reset email sent."}, status=status.HTTP_200_OK)

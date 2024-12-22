@@ -29,8 +29,12 @@ SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
 DEBUG = True
+<<<<<<< HEAD
 # ALLOWED_HOSTS = ['chjashore.online', '86.48.3.219']
 ALLOWED_HOSTS=[]
+=======
+ALLOWED_HOSTS = ['chjashore.online', '86.48.3.219','127.0.0.1']
+>>>>>>> origin/main
 AUTH_USER_MODEL = 'authapp.User'
 
 # settings.py
@@ -124,7 +128,12 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'CircuitHouse',
+<<<<<<< HEAD
 #         'USER': 'ndcjashore1',
+=======
+#         # 'USER': 'ndcjashore1',
+#         'USER': 'postgresql',
+>>>>>>> origin/main
 #         'PASSWORD': '123456NdcJ',
 #         'HOST': 'localhost',
 #         'PORT': '5432',
@@ -163,15 +172,34 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # or any path you prefer
+
+# STATIC_URL = 'static/'
+
+# STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static')
+# ]
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_USE_TLS = True
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = 'niloydas01910@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'pevg ferq sret ppgt'
+
