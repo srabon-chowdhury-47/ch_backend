@@ -31,8 +31,11 @@ class BookAPIView(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     
     def perform_create(self, serializer):
-        # Save the new booking
+        
         guest = serializer.save()
+        room = guest.room  
+        room.availability_status = 'Occupied'
+        room.save()
 
         # Send a confirmation email
         self.send_confirmation_email(guest)

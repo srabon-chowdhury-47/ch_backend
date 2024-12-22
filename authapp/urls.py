@@ -16,3 +16,5 @@ urlpatterns = [
     path('user/', UserProfileView.as_view(), name='user-profile'),
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
