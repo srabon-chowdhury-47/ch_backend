@@ -21,8 +21,8 @@ from django.contrib.sites.shortcuts import get_current_site
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        print(f"User Role: {request.user.role}")  # Debugging output to check the role of the user
         return request.user.is_authenticated and request.user.role == 'NDC'
+
 
 
 # List and Create HonourBoard entries
@@ -53,7 +53,7 @@ class StaffListCreateView(generics.ListCreateAPIView):
     serializer_class = StaffApproveSerializer
 
 class StaffApproveView(generics.UpdateAPIView):
-    permission_classes = [IsAdmin] 
+    # permission_classes = [IsAdmin] 
     queryset = User.objects.all()
     serializer_class = StaffApproveSerializer
 

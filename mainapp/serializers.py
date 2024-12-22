@@ -29,6 +29,8 @@ class PriceSerializer(serializers.ModelSerializer):
         return value
     
 class BookSerializer(serializers.ModelSerializer):
+    room_name = serializers.CharField(source='room.room_name', read_only=True)  # Get room_name from related Room model
+
     class Meta:
         model = Guest
         fields = '__all__'

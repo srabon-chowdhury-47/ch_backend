@@ -1,4 +1,7 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
 from .views import *
 from django.contrib.auth import views as auth_views
 
@@ -16,3 +19,6 @@ urlpatterns = [
     path('reset-password-link/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(),name='reset-password-link'),
     path('password_reset_complete/',auth_views.PasswordResetCompleteView.as_view(),name='password-reset-complete'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
