@@ -29,12 +29,7 @@ SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
 DEBUG = True
-<<<<<<< HEAD
-# ALLOWED_HOSTS = ['chjashore.online', '86.48.3.219']
-ALLOWED_HOSTS=[]
-=======
 ALLOWED_HOSTS = ['chjashore.online', '86.48.3.219','127.0.0.1']
->>>>>>> origin/main
 AUTH_USER_MODEL = 'authapp.User'
 
 # settings.py
@@ -46,7 +41,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',  # Ensure user needs to be logged in
+    #     'rest_framework.permissions.IsAuthenticated',  # Global default permission
     # ],
 }
 
@@ -128,12 +123,7 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'CircuitHouse',
-<<<<<<< HEAD
 #         'USER': 'ndcjashore1',
-=======
-#         # 'USER': 'ndcjashore1',
-#         'USER': 'postgresql',
->>>>>>> origin/main
 #         'PASSWORD': '123456NdcJ',
 #         'HOST': 'localhost',
 #         'PORT': '5432',
