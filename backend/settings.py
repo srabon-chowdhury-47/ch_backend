@@ -29,8 +29,7 @@ SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
 DEBUG = True
-# ALLOWED_HOSTS = ['86.48.3.219','chjashore.online']
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['chjashore.online', '86.48.3.219','127.0.0.1']
 AUTH_USER_MODEL = 'authapp.User'
 
 # settings.py
@@ -128,8 +127,7 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'CircuitHouse',
-#         # 'USER': 'ndcjashore1',
-#         'USER': 'postgresql',
+#         'USER': 'ndcjashore1',
 #         'PASSWORD': '123456NdcJ',
 #         'HOST': 'localhost',
 #         'PORT': '5432',
