@@ -29,8 +29,8 @@ SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
 DEBUG = True
-ALLOWED_HOSTS = ['86.48.3.219','chjashore.online']
-# ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['86.48.3.219','chjashore.online']
+ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'authapp.User'
 
 # settings.py

@@ -7,6 +7,8 @@ from django.conf import settings
 from rest_framework.permissions import AllowAny, IsAuthenticated
 import datetime
 from django.template.loader import render_to_string
+from rest_framework import generics, status
+from rest_framework.response import Response
 
 class RoomListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]  
@@ -71,3 +73,30 @@ class BookAPIView(generics.ListCreateAPIView):
         #     recipient_list,
         #     fail_silently=False,
         # )
+        
+class CheckOutView(generics.ListCreateAPIView):
+    queryset = CheckoutSummary.objects.all()
+    serializer_class = CheckoutSummarySerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            guest_id = request.data.get("guest_id")
+            payment_status = request.data.get("paymentStatus")
+            
+            print(guest_id, payment_status)
+
+            guest = Guest.objects.get(id=guest_id)
+
+            checkout_summary = CheckoutSummary.objects.create(
+                guest=guest,
+                payment_status=payment_status,
+            )
+
+            serializer = self.get_serializer(checkout_summary)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Guest.DoesNotExist:
+            return Response({"error": "Guest not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    

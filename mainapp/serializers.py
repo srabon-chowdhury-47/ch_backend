@@ -34,4 +34,11 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guest
         fields = '__all__'
+        
+        
+class CheckoutSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CheckoutSummary
+        fields = "__all__"
+
     
