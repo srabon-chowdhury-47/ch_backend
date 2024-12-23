@@ -8,8 +8,8 @@ admin.site.register(Food)
 admin.site.register(OtherCost)
 admin.site.register(CheckoutSummary)
 
-class GuestAdmin(admin.ModelAdmin):
-    readonly_fields = ('total_days', 'total_rental_price')  
-    list_display = ('name', 'total_days', 'total_rental_price')  
+# class GuestAdmin(admin.ModelAdmin):
+#     readonly_fields = ('total_days', 'total_rental_price')  
+#     list_display = ('name', 'total_days', 'total_rental_price')  
 
-admin.site.register(Guest, GuestAdmin)
+admin.site.register(Guest)

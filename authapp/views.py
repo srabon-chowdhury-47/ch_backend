@@ -35,18 +35,38 @@ class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HonourBoard.objects.all()
     serializer_class = HonourBoardSerializer
 
-class UserRegistrationView(APIView):
-    def post(self, request, *args, **kwargs):
-        # Log the received data
-        print("Received data:", request.data)
+from rest_framework.generics import ListCreateAPIView
+class UserRegistrationView(ListCreateAPIView):
+    
+    queryset = User.objects.all()  # Replace `User` with your model name
+    serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
 
-        serializer = UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Registration successful"}, status=status.HTTP_201_CREATED)
-        else:
-            print("Errors:", serializer.errors)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        print("Received data:", request.data)  # Log received data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {"message": "Registration successful"},
+            status=status.HTTP_201_CREATED
+        )
+
+    def perform_create(self, serializer):
+        # Save the serializer and handle any additional logic if needed
+        serializer.save()
+# class UserRegistrationView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         # Log the received data
+#         print("Received data:", request.data)
+
+#         serializer = UserRegistrationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({"message": "Registration successful"}, status=status.HTTP_201_CREATED)
+#         else:
+#             print("Errors:", serializer.errors)
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class StaffListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()

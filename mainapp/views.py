@@ -82,11 +82,12 @@ class CheckOutView(generics.ListCreateAPIView):
         try:
             guest_id = request.data.get("guest_id")
             payment_status = request.data.get("paymentStatus")
-            
-            print(guest_id, payment_status)
+
+            print(guest_id, payment_status) 
 
             guest = Guest.objects.get(id=guest_id)
 
+            # Create CheckoutSummary instance
             checkout_summary = CheckoutSummary.objects.create(
                 guest=guest,
                 payment_status=payment_status,
@@ -99,4 +100,5 @@ class CheckOutView(generics.ListCreateAPIView):
             return Response({"error": "Guest not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     
