@@ -98,13 +98,15 @@ class UserProfileView(APIView):
 class ForgotPasswordView(APIView):
     def post(self, request):
         email = request.data.get("email")
+        username = request.data.get("username")
+        print(username)
         print(email)
 
         if not email:
             raise ValidationError("Email is required.")
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username = username)
         except User.DoesNotExist:
             raise ValidationError("User with this email does not exist.")
 
@@ -112,7 +114,7 @@ class ForgotPasswordView(APIView):
         token = default_token_generator.make_token(user)
 
         # Send email with password reset link
-        reset_url = f"http://{get_current_site(request).domain}/reset-password/{urlsafe_base64_encode(user.pk.encode())}/{token}/"
+        reset_url = f"http://{get_current_site(request).domain}/reset-password-link/{urlsafe_base64_encode(str(user.pk).encode())}/{token}/"
         send_mail(
             subject="Password Reset Request",
             message=f"Click the link below to reset your password:\n{reset_url}",
