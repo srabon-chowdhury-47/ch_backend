@@ -51,9 +51,9 @@ class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
 #             status=status.HTTP_201_CREATED
 #         )
 
-    def perform_create(self, serializer):
-        # Save the serializer and handle any additional logic if needed
-        serializer.save()
+    # def perform_create(self, serializer):
+    #     # Save the serializer and handle any additional logic if needed
+    #     serializer.save()
 
 
 class UserRegistrationView(generics.ListCreateAPIView):

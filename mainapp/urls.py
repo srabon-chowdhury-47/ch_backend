@@ -14,5 +14,6 @@ urlpatterns = [
     path('book/',BookAPIView.as_view(),name ="book"),
     path('food/',FoodOrderAPIView.as_view(),name='food'),
     path('other-cost/',OtherCostAPIView.as_view(),name='others'),
+    path('checkout/',CheckOutView.as_view(),name='checkout')
 
 ]
