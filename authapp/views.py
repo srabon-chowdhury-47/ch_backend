@@ -35,6 +35,27 @@ class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HonourBoard.objects.all()
     serializer_class = HonourBoardSerializer
 
+# class UserRegistrationView(ListCreateAPIView):
+    
+#     queryset = User.objects.all()  # Replace `User` with your model name
+#     serializer_class = UserRegistrationSerializer
+#     permission_classes = [AllowAny]
+
+#     def create(self, request, *args, **kwargs):
+#         print("Received data:", request.data)  # Log received data
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         return Response(
+#             {"message": "Registration successful"},
+#             status=status.HTTP_201_CREATED
+#         )
+
+    def perform_create(self, serializer):
+        # Save the serializer and handle any additional logic if needed
+        serializer.save()
+
+
 class UserRegistrationView(generics.ListCreateAPIView):
     queryset = User.objects.all()  # Retrieve all users, adjust as needed
     serializer_class = UserRegistrationSerializer
@@ -100,13 +121,15 @@ class UserProfileView(APIView):
 class ForgotPasswordView(APIView):
     def post(self, request):
         email = request.data.get("email")
+        username = request.data.get("username")
+        print(username)
         print(email)
 
         if not email:
             raise ValidationError("Email is required.")
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username = username)
         except User.DoesNotExist:
             raise ValidationError("User with this email does not exist.")
 
@@ -114,7 +137,7 @@ class ForgotPasswordView(APIView):
         token = default_token_generator.make_token(user)
 
         # Send email with password reset link
-        reset_url = f"http://{get_current_site(request).domain}/reset-password/{urlsafe_base64_encode(user.pk.encode())}/{token}/"
+        reset_url = f"http://{get_current_site(request).domain}/reset-password-link/{urlsafe_base64_encode(str(user.pk).encode())}/{token}/"
         send_mail(
             subject="Password Reset Request",
             message=f"Click the link below to reset your password:\n{reset_url}",
