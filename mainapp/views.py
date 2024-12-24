@@ -11,7 +11,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 
 class RoomListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]  
+    # permission_classes = [IsAuthenticated]  # Only authenticated users can access
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
@@ -23,11 +23,14 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
 
 
 class PricingViewSet(viewsets.ModelViewSet):
+    # permission_classes = [IsAuthenticated]  # Only authenticated users can access
     queryset = Pricing.objects.all()
     serializer_class = PriceSerializer
     
 from django.core.mail import EmailMultiAlternatives 
 class BookAPIView(generics.ListCreateAPIView):
+    # permission_classes = [IsAuthenticated]  # Only authenticated users can access
+
     permission_classes = [AllowAny]  
     queryset = Guest.objects.filter()
     serializer_class = BookSerializer
@@ -102,3 +105,22 @@ class CheckOutView(generics.ListCreateAPIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     
+
+class FoodOrderAPIView(generics.ListCreateAPIView):
+    # permission_classes = [IsAuthenticated]  # Only authenticated users can access
+
+    queryset = Food.objects.all()
+    serializer_class = FoodSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(date=date.today())  # Automatically set the current date
+
+class OtherCostAPIView(generics.ListCreateAPIView):
+    # permission_classes = [IsAuthenticated]  # Only authenticated users can access
+
+    queryset = OtherCost.objects.all()
+    serializer_class = OtherCostSerializer
+    # permission_classes = [IsAuthenticated]  # Require authentication for ordering food
+
+    def perform_create(self, serializer):
+        serializer.save(date=date.today())  # Automatically set the current date

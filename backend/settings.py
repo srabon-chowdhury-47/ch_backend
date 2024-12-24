@@ -41,7 +41,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',  # Ensure user needs to be logged in
+    #     'rest_framework.permissions.IsAuthenticated',  # Global default permission
     # ],
 }
 

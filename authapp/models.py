@@ -8,23 +8,30 @@ class User(AbstractUser):
         ('NDC', 'NDC'),
         ('Assistant Accountant', 'Assistant Accountant'),
     ]
-    role = models.CharField(max_length=40, choices=ROLE_CHOICES,default='Assistant Accountant',blank=True,null=True)
-    # designation = models.CharField(max_length=255)
+    role = models.CharField(max_length=40, choices=ROLE_CHOICES, default='Assistant Accountant', blank=True, null=True)
     is_approved = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='img/', blank=True, null=True)
 
-    # Specify related_name to avoid reverse accessor clashes
     groups = models.ManyToManyField(
         'auth.Group', 
-        related_name='custom_user_set',  # Change 'custom_user_set' to a suitable name
+        related_name='custom_user_set', 
         blank=True
     )
     
     user_permissions = models.ManyToManyField(
         'auth.Permission', 
-        related_name='custom_user_permissions_set',  # Change 'custom_user_permissions_set' to a suitable name
+        related_name='custom_user_permissions_set', 
         blank=True
     )
+
+    def save(self, *args, **kwargs):
+        # If the user is a superuser, set their role to 'NDC' and is_approved to True
+        if self.is_superuser:
+            self.role = 'NDC'
+            self.is_approved = True
+        elif not self.role:  # If the role is not provided, assign the default 'Assistant Accountant'
+            self.role = 'Assistant Accountant'
+        super().save(*args, **kwargs)  # Call the original save method
 
     def __str__(self):
         return self.username
