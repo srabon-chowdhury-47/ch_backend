@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
@@ -21,7 +22,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and (request.user.role == 'NDC' or request.user.is_superuser)
+        return request.user.is_authenticated and request.user.role == 'NDC'
 
 
 
@@ -34,42 +35,38 @@ class HonourBoardListCreateView(generics.ListCreateAPIView):
 class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HonourBoard.objects.all()
     serializer_class = HonourBoardSerializer
-
-# class UserRegistrationView(ListCreateAPIView):
     
-#     queryset = User.objects.all()  # Replace `User` with your model name
-#     serializer_class = UserRegistrationSerializer
-#     permission_classes = [AllowAny]
-
-#     def create(self, request, *args, **kwargs):
-#         print("Received data:", request.data)  # Log received data
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-#         return Response(
-#             {"message": "Registration successful"},
-#             status=status.HTTP_201_CREATED
-#         )
-
-    def perform_create(self, serializer):
-        # Save the serializer and handle any additional logic if needed
-        serializer.save()
-
-
-class UserRegistrationView(generics.ListCreateAPIView):
-    queryset = User.objects.all()  # Retrieve all users, adjust as needed
+    
+from rest_framework.generics import ListCreateAPIView
+class UserRegistrationView(ListCreateAPIView):
+    permission_classes=[AllowAny]
+    queryset = User.objects.all()  # Replace `User` with your model name
     serializer_class = UserRegistrationSerializer
 
-    def perform_create(self, serializer):
-        # You can also handle custom logic here if needed, e.g., logging or processing before saving
-        serializer.save()
-    
     def create(self, request, *args, **kwargs):
-        # Log the received data
-        print("Received data:", request.data)
+        print("Received data:", request.data)  # Log received data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {"message": "Registration successful"},
+            status=status.HTTP_201_CREATED
+        )
 
-        # Use the default behavior to handle the creation
-        return super().create(request, *args, **kwargs)
+# class UserRegistrationView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         # Log the received data
+#         print("Received data:", request.data)
+
+#         serializer = UserRegistrationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({"message": "Registration successful"}, status=status.HTTP_201_CREATED)
+#         else:
+#             print("Errors:", serializer.errors)
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class StaffListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -110,11 +107,11 @@ class PasswordChangeView(APIView):
 
 
 class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]  
+    # permission_classes = [IsAuthenticated]  
     
     def get(self, request):
         user = request.user 
-        print(user.role)
+        print(user)
         serializer = UserProfileSerializer(user) 
         return Response(serializer.data)
     
