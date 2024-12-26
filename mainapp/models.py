@@ -140,7 +140,7 @@ class Guest(models.Model):
 class Food(models.Model):
     TIME_CHOICES = [
         ('Breakfast', 'Breakfast'),
-        ('Launch', 'Launch'),
+        ('Lunch', 'Lunch'),
         ('Dinner', 'Dinner'),
     ]
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
