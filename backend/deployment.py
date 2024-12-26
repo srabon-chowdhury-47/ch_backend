@@ -22,7 +22,7 @@ MIDDLEWARE = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://chjashore.online"
+    "https://chjashore.online"
 ]
 
 
