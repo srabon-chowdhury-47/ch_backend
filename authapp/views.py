@@ -36,35 +36,11 @@ class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HonourBoard.objects.all()
     serializer_class = HonourBoardSerializer
     
-<<<<<<< HEAD
-#     queryset = User.objects.all()  # Replace `User` with your model name
-#     serializer_class = UserRegistrationSerializer
-#     permission_classes = [AllowAny]
-
-#     def create(self, request, *args, **kwargs):
-#         print("Received data:", request.data)  # Log received data
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-#         return Response(
-#             {"message": "Registration successful"},
-#             status=status.HTTP_201_CREATED
-#         )
-
-    # def perform_create(self, serializer):
-    #     # Save the serializer and handle any additional logic if needed
-    #     serializer.save()
-
-
-class UserRegistrationView(generics.ListCreateAPIView):
-    queryset = User.objects.all()  # Retrieve all users, adjust as needed
-=======
     
 from rest_framework.generics import ListCreateAPIView
 class UserRegistrationView(ListCreateAPIView):
     permission_classes=[AllowAny]
     queryset = User.objects.all()  # Replace `User` with your model name
->>>>>>> db332c22c43725ee943668ae45714ae8e205574c
     serializer_class = UserRegistrationSerializer
 
     def create(self, request, *args, **kwargs):

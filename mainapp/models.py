@@ -140,7 +140,7 @@ class Guest(models.Model):
 class Food(models.Model):
     TIME_CHOICES = [
         ('Breakfast', 'Breakfast'),
-        ('Launch', 'Launch'),
+        ('Lunch', 'Lunch'),
         ('Dinner', 'Dinner'),
     ]
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
@@ -177,7 +177,7 @@ class CheckoutSummary(models.Model):
         self.total_rental_cost = self.guest.total_rental_price
         self.total_food_cost = sum([food.price for food in Food.objects.filter(guest=self.guest)])  # Assuming the food cost is stored in the Food model
         self.total_other_cost = sum([cost.price for cost in OtherCost.objects.filter(guest=self.guest)])
-        
+        print(self.total_food_cost)
         # Calculate the grand total including the other cost
         self.grand_total = self.total_rental_cost + self.total_food_cost + self.total_other_cost
         super(CheckoutSummary, self).save(*args, **kwargs)
