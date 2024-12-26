@@ -27,10 +27,8 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
 DEBUG = True
-ALLOWED_HOSTS = ['86.48.3.219','chjashore.online']
-# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 AUTH_USER_MODEL = 'authapp.User'
 
 # settings.py
@@ -42,7 +40,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',  # Ensure user needs to be logged in
+    #     'rest_framework.permissions.IsAuthenticated',  # Global default permission
     # ],
 }
 
@@ -89,6 +87,10 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
@@ -124,8 +126,7 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'CircuitHouse',
-#         # 'USER': 'ndcjashore1',
-#         'USER': 'postgresql',
+#         'USER': 'ndcjashore1',
 #         'PASSWORD': '123456NdcJ',
 #         'HOST': 'localhost',
 #         'PORT': '5432',
@@ -165,17 +166,11 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # or any path you prefer
 
-# STATIC_URL = 'static/'
-
-# STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static')
-# ]
 
 
 # Default primary key field type

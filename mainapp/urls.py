@@ -11,5 +11,9 @@ urlpatterns = [
     path('room/', RoomListCreateAPIView.as_view(), name='room-list'), 
     path('pricing/', pricing_list_create, name='pricing-list-create'),
     path('pricing/<int:pk>/', pricing_detail, name='pricing-detail'),
-    path('book/',BookAPIView.as_view(),name ="book")
+    path('book/',BookAPIView.as_view(),name ="book"),
+    path('checkout/', CheckOutView.as_view(), name ="checkout"),
+    path('food/',FoodOrderAPIView.as_view(),name='food'),
+    path('other-cost/',OtherCostAPIView.as_view(),name='others'),
+
 ]
