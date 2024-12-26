@@ -27,10 +27,18 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
 DEBUG = True
-ALLOWED_HOSTS = ['chjashore.online', '86.48.3.219','127.0.0.1']
+# ALLOWED_HOSTS = ['127.0.0.1']
 AUTH_USER_MODEL = 'authapp.User'
+ALLOWED_HOSTS = ['chjashore.online', 'www.chjashore.online', '86.48.3.219', '127.0.0.1']
+
+# Corrected CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    'https://chjashore.online',
+    'https://www.chjashore.online',
+    'http://127.0.0.1',
+]
+
 
 # settings.py
 
@@ -87,10 +95,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-]
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -167,17 +174,11 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # or any path you prefer
 
-# STATIC_URL = 'static/'
-
-# STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static')
-# ]
 
 
 # Default primary key field type

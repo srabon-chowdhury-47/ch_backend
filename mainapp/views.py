@@ -96,6 +96,8 @@ class CheckOutView(generics.ListCreateAPIView):
                 payment_status=payment_status,
             )
 
+            self.perform_create(checkout_summary)
+
             serializer = self.get_serializer(checkout_summary)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -104,6 +106,41 @@ class CheckOutView(generics.ListCreateAPIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    def perform_create(self, checkout_summary):
+        
+        guest = checkout_summary.guest
+        room = guest.room  
+        room.availability_status = 'Needs clean'
+        room.save()
+
+        # Send a confirmation email
+        self.send_confirmation_email(guest)
+        
+
+    def send_confirmation_email(self, guest):
+        
+        context = {
+        'guest': guest,
+        'current_time': datetime.datetime.now()
+         }
+
+        html_content = render_to_string(
+            'Home/checkout_email.html',
+            context
+        )
+        subject = "Checkout Confirmation"
+
+        text_content = f"""
+        Dear {guest.name},\n\n" "Your room booking at the Circuit House is confirmed. We look forward to hosting you.
+        \n\n" "Best regards,\nCircuit House Management"
+        {datetime.datetime.now()}
+        """
+        
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [guest.email]
+        msg = EmailMultiAlternatives(subject, text_content, from_email,recipient_list)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
     
 
 class FoodOrderAPIView(generics.ListCreateAPIView):
