@@ -12,6 +12,7 @@ from datetime import date
 class Room(models.Model):
     STATUS_CHOICES = [
         ('Vacant', 'Vacant'),
+        ('Booked','Booked'),
         ('Occupied', 'Occupied'),
         ('Needs clean', 'Needs clean'),
         ('Needs verify', 'Needs verify'),
