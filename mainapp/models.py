@@ -2,16 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import date
 
-from django.db import models
-from datetime import date
-
-
 
 
 # Room Table
 class Room(models.Model):
     STATUS_CHOICES = [
         ('Vacant', 'Vacant'),
+        ('Booked', 'Booked'),
         ('Occupied', 'Occupied'),
         ('Needs clean', 'Needs clean'),
         ('Needs verify', 'Needs verify'),
@@ -80,6 +77,7 @@ class Guest(models.Model):
     comment = models.TextField(blank=True, null=True)
     
     def save(self, *args, **kwargs):
+        
         # Step 1: Calculate total days
         if self.check_in_date and self.check_out_date:
             self.total_days = (self.check_out_date - self.check_in_date).days
@@ -128,19 +126,16 @@ class Guest(models.Model):
 
             # Assign the calculated total rental price
             self.total_rental_price = total_cost
-
-        # Save the instance
+            print(self.total_rental_price)
+            
         super(Guest, self).save(*args, **kwargs)
-
-
-
-
+        
 
 # Food Table
 class Food(models.Model):
     TIME_CHOICES = [
         ('Breakfast', 'Breakfast'),
-        ('Launch', 'Launch'),
+        ('Lunch', 'Lunch'),
         ('Dinner', 'Dinner'),
     ]
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)

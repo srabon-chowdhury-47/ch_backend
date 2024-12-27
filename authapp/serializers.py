@@ -39,26 +39,28 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Password doesn't match")
         return data
 
-        try:
-            validate_password(data['password'])
-        except ValidationError as e:
-            raise serializers.ValidationError({"password":e.messages})
+        # try:
+        #     validate_password(data['password'])
+        # except ValidationError as e:
+        #     raise serializers.ValidationError({"password":e.messages})
 
-    def create(self,validated_data):
+        
+
+    def create(self, validated_data):
+        # logging.info(f"Validated data: {validated_data}")
         validated_data.pop('confirm_password')
-        User=get_user_model()
-
-        user=User.objects.create_user(
+        User = get_user_model()
+        user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
             email=validated_data['email'],
         )
         if 'profile_picture' in validated_data:
             user.profile_picture = validated_data['profile_picture']
-        # user.role=validated_data['role']
-        user.is_approved =False      
+        user.is_approved = False
         user.save()
         return user
+
 
 class StaffApproveSerializer(serializers.ModelSerializer):    
     class Meta:

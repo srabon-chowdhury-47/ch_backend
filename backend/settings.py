@@ -28,8 +28,17 @@ SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'authapp.User'
+# ALLOWED_HOSTS = ['chjashore.online', 'www.chjashore.online', '86.48.3.219', '127.0.0.1']
+
+# Corrected CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    'https://chjashore.online',
+    'https://www.chjashore.online',
+    'http://127.0.0.1',
+]
+
 
 # settings.py
 
@@ -47,7 +56,7 @@ REST_FRAMEWORK = {
 
 # Token Lifetime
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 }
 
@@ -86,10 +95,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-]
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -158,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 

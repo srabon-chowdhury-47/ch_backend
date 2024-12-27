@@ -30,10 +30,19 @@ class PriceSerializer(serializers.ModelSerializer):
     
 class BookSerializer(serializers.ModelSerializer):
     room_name = serializers.CharField(source='room.room_name', read_only=True)  # Get room_name from related Room model
-
+    total_food_cost = serializers.SerializerMethodField()
+    total_other_cost = serializers.SerializerMethodField()
+    
     class Meta:
         model = Guest
         fields = '__all__'
+        
+        
+    def get_total_food_cost(self, obj):
+        return sum(food.price for food in Food.objects.filter(guest=obj))
+
+    def get_total_other_cost(self, obj):
+        return sum(cost.price for cost in OtherCost.objects.filter(guest=obj))
         
         
 class CheckoutSummarySerializer(serializers.ModelSerializer):
