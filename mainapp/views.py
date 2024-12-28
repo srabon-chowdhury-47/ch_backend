@@ -21,6 +21,14 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
             return [IsAuthenticated()]  # Only authenticated users can create rooms
         return [AllowAny()]  # Allow everyone to view rooms
 
+class RoomRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+    permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
+
+    # def get_object(self):
+    #     """Override to retrieve the room object based on the pk"""
+    #     return super().get_object()
 
 class PricingViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]  # Only authenticated users can access
@@ -32,14 +40,14 @@ class BookAPIView(generics.ListCreateAPIView):
     # permission_classes = [IsAuthenticated]  # Only authenticated users can access
 
     permission_classes = [AllowAny]  
-    queryset = Guest.objects.filter()
+    queryset = Guest.objects.all().order_by('-check_in_date')
     serializer_class = BookSerializer
     
     def perform_create(self, serializer):
         
         guest = serializer.save()
         room = guest.room  
-        room.availability_status = 'Occupied'
+        room.availability_status = 'Booked'
         room.save()
 
         # Send a confirmation email
