@@ -3,8 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from datetime import date
 
 
-
-# Room Table
 class Room(models.Model):
     STATUS_CHOICES = [
         ('Vacant', 'Vacant'),
@@ -27,8 +25,9 @@ class Room(models.Model):
     
     def __str__(self):
         return self.room_name
-        # Pricing Table
-
+    
+    
+# Pricing Table
 class Pricing(models.Model):
     USER_TYPE_CHOICES = [
         ('Government Officer', 'Government Officer'),
@@ -67,8 +66,8 @@ class Guest(models.Model):
     nid = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=50, null=True, blank =True)
     phone = models.CharField(max_length=20)
-    check_in_date = models.DateField()
-    check_out_date = models.DateField()
+    check_in_date = models.DateTimeField()
+    check_out_date = models.DateTimeField()
     total_person = models.IntegerField()
     motive_of_visiting = models.TextField(blank=True, null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -144,6 +143,7 @@ class Food(models.Model):
     food_menu = models.TextField()
     Order_time = models.CharField(max_length=20, choices=TIME_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
 
 class OtherCost(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE,null=True,blank=True)
@@ -156,7 +156,6 @@ class OtherCost(models.Model):
         return f"{self.item} - {self.price} ({self.date})"
 
 
-# Checkout Summary Table
 class CheckoutSummary(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
     total_rental_cost = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
