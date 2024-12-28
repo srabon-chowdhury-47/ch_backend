@@ -40,7 +40,7 @@ class BookAPIView(generics.ListCreateAPIView):
     # permission_classes = [IsAuthenticated]  # Only authenticated users can access
 
     permission_classes = [AllowAny]  
-    queryset = Guest.objects.all().order_by('-check_in_date')
+    queryset = Guest.objects.all()
     serializer_class = BookSerializer
     
     def perform_create(self, serializer):
