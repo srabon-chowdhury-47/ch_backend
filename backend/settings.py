@@ -56,7 +56,7 @@ REST_FRAMEWORK = {
 
 # Token Lifetime
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365 * 100),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 }
 
