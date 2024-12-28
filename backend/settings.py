@@ -166,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -194,7 +194,7 @@ EMAIL_USE_TLS = True
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'niloydas01910@gmail.com'
+EMAIL_HOST_USER = 'chjashore@gmail.com'
 
-EMAIL_HOST_PASSWORD = 'pevg ferq sret ppgt'
+EMAIL_HOST_PASSWORD = 'zojn zwlu cbji jptl'
 

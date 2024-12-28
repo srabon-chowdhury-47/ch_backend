@@ -77,13 +77,7 @@ class BookAPIView(generics.ListCreateAPIView):
         msg = EmailMultiAlternatives(subject, text_content, from_email,recipient_list)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        # send_mail(
-        #     subject,
-        #     message,
-        #     settings.EMAIL_HOST_USER,
-        #     recipient_list,
-        #     fail_silently=False,
-        # )
+       
         
 class CheckOutView(generics.ListCreateAPIView):
     queryset = CheckoutSummary.objects.all()
