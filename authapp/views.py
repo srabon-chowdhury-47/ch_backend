@@ -30,9 +30,16 @@ class IsAdmin(BasePermission):
 class HonourBoardListCreateView(generics.ListCreateAPIView):
     queryset = HonourBoard.objects.all().order_by('-joining_date')
     serializer_class = HonourBoardSerializer
+    
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]  # Require authentication for POST
+        return [AllowAny()]  # Allow anyone to access GET
+    
 
 # Retrieve, Update, and Delete a specific HonourBoard entry
 class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = [IsAuthenticated]
     queryset = HonourBoard.objects.all()
     serializer_class = HonourBoardSerializer
     
@@ -69,11 +76,12 @@ class UserRegistrationView(ListCreateAPIView):
 
 
 class StaffListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAdmin]
     queryset = User.objects.all()
     serializer_class = StaffApproveSerializer
 
 class StaffApproveView(generics.UpdateAPIView):
-    # permission_classes = [IsAdmin] 
+    permission_classes = [IsAdmin] 
     queryset = User.objects.all()
     serializer_class = StaffApproveSerializer
 
@@ -94,8 +102,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 class PasswordChangeView(APIView):
-    # permission_classes=[AllowAny]
-
+    permission_classes = [IsAuthenticated]
     def put(self, request):
             serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
@@ -107,7 +114,7 @@ class PasswordChangeView(APIView):
 
 
 class UserProfileView(APIView):
-    # permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated]  
     
     def get(self, request):
         user = request.user 
@@ -116,6 +123,7 @@ class UserProfileView(APIView):
         return Response(serializer.data)
     
 class ForgotPasswordView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         email = request.data.get("email")
         username = request.data.get("username")
