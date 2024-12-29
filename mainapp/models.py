@@ -6,7 +6,7 @@ from datetime import date
 class Room(models.Model):
     STATUS_CHOICES = [
         ('Vacant', 'Vacant'),
-        ('Booked', 'Booked'),
+        ('Booked','Booked'),
         ('Occupied', 'Occupied'),
         ('Needs clean', 'Needs clean'),
         ('Needs verify', 'Needs verify'),
@@ -66,8 +66,8 @@ class Guest(models.Model):
     nid = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=50, null=True, blank =True)
     phone = models.CharField(max_length=20)
-    check_in_date = models.DateTimeField()
-    check_out_date = models.DateTimeField()
+    check_in_date = models.DateTimeField(blank=True, null=True)
+    check_out_date = models.DateTimeField(blank=True, null=True)
     total_person = models.IntegerField()
     motive_of_visiting = models.TextField(blank=True, null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -138,7 +138,7 @@ class Food(models.Model):
         ('Dinner', 'Dinner'),
     ]
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
-    room=models.ForeignKey(Room,on_delete=models.CASCADE,null=True,blank=True)
+    room=models.ForeignKey(Room,on_delete=models.CASCADE)
     date = models.DateField()
     food_menu = models.TextField()
     Order_time = models.CharField(max_length=20, choices=TIME_CHOICES)
@@ -147,10 +147,10 @@ class Food(models.Model):
 
 class OtherCost(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE,null=True,blank=True)
-    room=models.ForeignKey(Room,on_delete=models.CASCADE,null=True,blank=True)
-    date = models.DateField(null=True,blank=True)
-    item = models.CharField(max_length=50,null=True,blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    room=models.ForeignKey(Room,on_delete=models.CASCADE)
+    date = models.DateField()
+    item = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
         return f"{self.item} - {self.price} ({self.date})"
@@ -171,7 +171,7 @@ class CheckoutSummary(models.Model):
         self.total_rental_cost = self.guest.total_rental_price
         self.total_food_cost = sum([food.price for food in Food.objects.filter(guest=self.guest)])  # Assuming the food cost is stored in the Food model
         self.total_other_cost = sum([cost.price for cost in OtherCost.objects.filter(guest=self.guest)])
-        
+        print(self.total_food_cost)
         # Calculate the grand total including the other cost
         self.grand_total = self.total_rental_cost + self.total_food_cost + self.total_other_cost
         super(CheckoutSummary, self).save(*args, **kwargs)

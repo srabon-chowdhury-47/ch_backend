@@ -60,7 +60,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
 }
 
-# Application definition
+# Application definition 
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -194,7 +194,7 @@ EMAIL_USE_TLS = True
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'niloydas01910@gmail.com'
+EMAIL_HOST_USER = 'chjashore@gmail.com'
 
-EMAIL_HOST_PASSWORD = 'pevg ferq sret ppgt'
+EMAIL_HOST_PASSWORD = 'zojn zwlu cbji jptl'
 
