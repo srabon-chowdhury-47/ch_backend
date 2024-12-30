@@ -3,11 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from datetime import date
 
 
-
-# Room Table
 class Room(models.Model):
     STATUS_CHOICES = [
         ('Vacant', 'Vacant'),
+        ('Booked','Booked'),
         ('Occupied', 'Occupied'),
         ('Needs clean', 'Needs clean'),
         ('Needs verify', 'Needs verify'),
@@ -26,8 +25,9 @@ class Room(models.Model):
     
     def __str__(self):
         return self.room_name
-        # Pricing Table
-
+    
+    
+# Pricing Table
 class Pricing(models.Model):
     USER_TYPE_CHOICES = [
         ('Government Officer', 'Government Officer'),
@@ -65,9 +65,9 @@ class Guest(models.Model):
     user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES, default='Government Officer')
     nid = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=50, null=True, blank =True)
-    phone = models.CharField(max_length=20)
-    check_in_date = models.DateField()
-    check_out_date = models.DateField()
+    phone = models.CharField(max_length=20, blank=True, null= True)
+    check_in_date = models.DateTimeField(blank=True, null=True)
+    check_out_date = models.DateTimeField(blank=True, null=True)
     total_person = models.IntegerField()
     motive_of_visiting = models.TextField(blank=True, null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -76,6 +76,7 @@ class Guest(models.Model):
     comment = models.TextField(blank=True, null=True)
     
     def save(self, *args, **kwargs):
+        
         # Step 1: Calculate total days
         if self.check_in_date and self.check_out_date:
             self.total_days = (self.check_out_date - self.check_in_date).days
@@ -124,13 +125,10 @@ class Guest(models.Model):
 
             # Assign the calculated total rental price
             self.total_rental_price = total_cost
-
-        # Save the instance
+            print(self.total_rental_price)
+            
         super(Guest, self).save(*args, **kwargs)
-
-
-
-
+        
 
 # Food Table
 class Food(models.Model):
@@ -140,24 +138,24 @@ class Food(models.Model):
         ('Dinner', 'Dinner'),
     ]
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
-    room=models.ForeignKey(Room,on_delete=models.CASCADE,null=True,blank=True)
+    room=models.ForeignKey(Room,on_delete=models.CASCADE)
     date = models.DateField()
     food_menu = models.TextField()
     Order_time = models.CharField(max_length=20, choices=TIME_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
 
 class OtherCost(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE,null=True,blank=True)
-    room=models.ForeignKey(Room,on_delete=models.CASCADE,null=True,blank=True)
-    date = models.DateField(null=True,blank=True)
-    item = models.CharField(max_length=50,null=True,blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    room=models.ForeignKey(Room,on_delete=models.CASCADE)
+    date = models.DateField()
+    item = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
         return f"{self.item} - {self.price} ({self.date})"
 
 
-# Checkout Summary Table
 class CheckoutSummary(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
     total_rental_cost = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
@@ -173,7 +171,7 @@ class CheckoutSummary(models.Model):
         self.total_rental_cost = self.guest.total_rental_price
         self.total_food_cost = sum([food.price for food in Food.objects.filter(guest=self.guest)])  # Assuming the food cost is stored in the Food model
         self.total_other_cost = sum([cost.price for cost in OtherCost.objects.filter(guest=self.guest)])
-        
+        print(self.total_food_cost)
         # Calculate the grand total including the other cost
         self.grand_total = self.total_rental_cost + self.total_food_cost + self.total_other_cost
         super(CheckoutSummary, self).save(*args, **kwargs)

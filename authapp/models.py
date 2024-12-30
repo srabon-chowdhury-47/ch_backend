@@ -54,7 +54,7 @@ class HonourBoard(models.Model):
         ('NDC', 'NDC'),
     ]
     name = models.CharField(max_length=255)
-    batch = models.CharField(max_length=50)
+    batch = models.CharField(max_length=50,null=True,blank=True)
     joining_date = models.DateField()
     ending_date = models.DateField(blank=True,null=True)
     photo = models.ImageField(upload_to='img/',blank=True,null=True)

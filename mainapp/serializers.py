@@ -30,10 +30,19 @@ class PriceSerializer(serializers.ModelSerializer):
     
 class BookSerializer(serializers.ModelSerializer):
     room_name = serializers.CharField(source='room.room_name', read_only=True)  # Get room_name from related Room model
-
+    total_food_cost = serializers.SerializerMethodField()
+    total_other_cost = serializers.SerializerMethodField()
+    
     class Meta:
         model = Guest
         fields = '__all__'
+        
+        
+    def get_total_food_cost(self, obj):
+        return sum(food.price for food in Food.objects.filter(guest=obj))
+
+    def get_total_other_cost(self, obj):
+        return sum(cost.price for cost in OtherCost.objects.filter(guest=obj))
         
         
 class CheckoutSummarySerializer(serializers.ModelSerializer):
@@ -61,11 +70,7 @@ class FoodSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         room_name = data.get('room_name')  # Get the room name from input
-        try:
-            room = Room.objects.get(room_name=room_name)  # Fetch Room instance based on room_name
-        except Room.DoesNotExist:
-            raise serializers.ValidationError({'room_name': 'Room not found.'})
-
+        room = Room.objects.get(room_name=room_name) 
         # Ensure a guest is currently staying in the room
         try:
             guest = Guest.objects.get(room=room, check_out_date__gte=date.today())
@@ -107,11 +112,7 @@ class OtherCostSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         room_name = data.get('room_name')  # Get the room name from input
-        try:
-            room = Room.objects.get(room_name=room_name)  # Fetch Room instance based on room_name
-        except Room.DoesNotExist:
-            raise serializers.ValidationError({'room_name': 'Room not found.'})
-
+        room = Room.objects.get(room_name=room_name) 
         # Ensure a guest is currently staying in the room
         try:
             guest = Guest.objects.get(room=room, check_out_date__gte=date.today())

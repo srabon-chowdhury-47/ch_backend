@@ -27,10 +27,10 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 SECRET_KEY = 'django-insecure-s&(&-zrw(l#88)w6m90m_-&b5+0$lbt7yd&*@16^nigcq8wz0&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+DEBUG = False
+# ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'authapp.User'
-# ALLOWED_HOSTS = ['chjashore.online', 'www.chjashore.online', '86.48.3.219', '127.0.0.1']
+ALLOWED_HOSTS = ['chjashore.online', 'www.chjashore.online', '86.48.3.219', '127.0.0.1']
 
 # Corrected CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
@@ -56,11 +56,11 @@ REST_FRAMEWORK = {
 
 # Token Lifetime
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365 * 100),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
 }
 
-# Application definition
+# Application definition 
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -123,23 +123,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'CircuitHouse',
-#         'USER': 'ndcjashore1',
-#         'PASSWORD': '123456NdcJ',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'circuithouse',
+        'USER': 'ndcjashore1',
+        'PASSWORD': '123456NdcJ',
+        'HOST': '86.48.3.219',  
+        'PORT': '5432', 
+    }
+}
 
 
 # Password validation
@@ -194,7 +194,7 @@ EMAIL_USE_TLS = True
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'niloydas01910@gmail.com'
+EMAIL_HOST_USER = 'chjashore@gmail.com'
 
-EMAIL_HOST_PASSWORD = 'pevg ferq sret ppgt'
+EMAIL_HOST_PASSWORD = 'zojn zwlu cbji jptl'
 

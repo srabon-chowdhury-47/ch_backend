@@ -21,6 +21,14 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
     #         return [IsAuthenticated()]  # Only authenticated users can create rooms
     #     return [AllowAny()]  # Allow everyone to view rooms
 
+class RoomRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+    permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
+
+    # def get_object(self):
+    #     """Override to retrieve the room object based on the pk"""
+    #     return super().get_object()
 
 class PricingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]  # Only authenticated users can access
@@ -30,8 +38,7 @@ class PricingViewSet(viewsets.ModelViewSet):
 from django.core.mail import EmailMultiAlternatives 
 class BookAPIView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]  # Only authenticated users can access
-
-    permission_classes = [AllowAny]  
+ 
     queryset = Guest.objects.filter()
     serializer_class = BookSerializer
     
@@ -39,7 +46,7 @@ class BookAPIView(generics.ListCreateAPIView):
         
         guest = serializer.save()
         room = guest.room  
-        room.availability_status = 'Occupied'
+        room.availability_status = 'Booked'
         room.save()
 
         # Send a confirmation email
@@ -69,14 +76,14 @@ class BookAPIView(generics.ListCreateAPIView):
         msg = EmailMultiAlternatives(subject, text_content, from_email,recipient_list)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        # send_mail(
-        #     subject,
-        #     message,
-        #     settings.EMAIL_HOST_USER,
-        #     recipient_list,
-        #     fail_silently=False,
-        # )
         
+        
+       
+class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Guest.objects.all()
+    serializer_class = BookSerializer
+         
 class CheckOutView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = CheckoutSummary.objects.all()
