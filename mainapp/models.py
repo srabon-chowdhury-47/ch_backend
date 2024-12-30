@@ -62,10 +62,11 @@ class Guest(models.Model):
     
     name = models.CharField(max_length=100)
     designation=models.CharField(max_length=50, blank=True, null=True)
+    # office=models.CharField(max_length=100, blank=True, null=True)
     user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES, default='Government Officer')
     nid = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=50, null=True, blank =True)
-    phone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20, blank=True, null= True)
     check_in_date = models.DateTimeField(blank=True, null=True)
     check_out_date = models.DateTimeField(blank=True, null=True)
     total_person = models.IntegerField()
