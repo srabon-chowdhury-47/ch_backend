@@ -15,18 +15,37 @@ class Room(models.Model):
     
     ROOM_TYPE_CHOICES = [
         ('One Bed', 'One Bed'),
-        ('Two Beds', 'Two Beds'),
+        ('Two Beds', 'Two Beds')
     ]
     
+    Room_Category_Choices = [
+        ('Regular', 'Regular'),
+        ('VIP', 'VIP'),
+        ('VVIP', 'VVIP'),
+    ]
+    
+    Building_Choices = [
+        ('New Building', 'New Building'),
+        ('Old Building', 'Old Building'),
+    ]
+    
+    Floor_Choices = [
+        ('First Floor', 'First Floor'),
+        ('Second Floor', 'Second Floor'),
+        ('Third Floor', 'Third Floor'),
+    ]
     room_name = models.CharField(max_length=255)
-    room_description = models.TextField(blank=True, null=True)
+    # room_description = models.TextField(blank=True, null=True)
     room_type = models.CharField(max_length=10, choices=ROOM_TYPE_CHOICES)
-    availability_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    room_category = models.CharField(max_length=10, choices= Room_Category_Choices, default='Regular')
+    availability_status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='Vacant')
+    building = models.CharField(max_length=20, choices=Building_Choices,default='New Building')
+    floor = models.CharField(max_length=20, choices=Floor_Choices,default='First Floor')
     
     def __str__(self):
         return self.room_name
     
-    
+     
 # Pricing Table
 class Pricing(models.Model):
     USER_TYPE_CHOICES = [

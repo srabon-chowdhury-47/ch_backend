@@ -107,7 +107,7 @@ class PasswordChangeView(APIView):
 
 
 class UserProfileView(APIView):
-    # permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated]  
     
     def get(self, request):
         user = request.user 
