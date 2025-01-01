@@ -22,9 +22,9 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
     #     return [AllowAny()]  # Allow everyone to view rooms
 
 class RoomRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
-    permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
 
     # def get_object(self):
     #     """Override to retrieve the room object based on the pk"""
@@ -83,6 +83,25 @@ class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Guest.objects.all()
     serializer_class = BookSerializer
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        previous_room = instance.room 
+
+        response = super().update(request, *args, **kwargs)
+
+        updated_guest = self.get_object()
+        updated_room = updated_guest.room
+
+        if previous_room and previous_room != updated_room:
+            previous_room.availability_status = 'Vacant'
+            previous_room.save()
+
+        if updated_room:
+            updated_room.availability_status = 'Booked'
+            updated_room.save()
+
+        return response
          
 class CheckOutView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
