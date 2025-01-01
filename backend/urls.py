@@ -26,7 +26,6 @@ urlpatterns = [
     path('api/', include('mainapp.urls')),
     path('api/', include('authapp.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('', TemplateView.as_view(template_name="index.html")),  # Catch-all for React
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
