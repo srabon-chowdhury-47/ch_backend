@@ -26,9 +26,7 @@ class RoomRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
 
-    # def get_object(self):
-    #     """Override to retrieve the room object based on the pk"""
-    #     return super().get_object()
+
 
 class PricingViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]  # Only authenticated users can access
