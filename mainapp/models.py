@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import date
+from datetime import date,datetime
 
 
 class Room(models.Model):
@@ -8,25 +8,43 @@ class Room(models.Model):
         ('Vacant', 'Vacant'),
         ('Booked','Booked'),
         ('Occupied', 'Occupied'),
-        ('Needs clean', 'Needs clean'),
+        ('Needs Housekeeping', 'Needs Housekeeping'),
         ('Needs verify', 'Needs verify'),
         ('Locked', 'Locked'),
     ]
     
     ROOM_TYPE_CHOICES = [
-        ('One Bed', 'One Bed'),
-        ('Two Beds', 'Two Beds'),
+        ('One King Size Bed', 'One King Size Bed'),
+        ('Two King Size Beds', 'Two King Size Beds')
     ]
     
+    Room_Category_Choices = [
+        ('Regular', 'Regular'),
+        ('VIP', 'VIP'),
+        ('VVIP', 'VVIP'),
+    ]
+    
+    Building_Choices = [
+        ('New Building', 'New Building'),
+        ('Old Building', 'Old Building'),
+    ]
+    
+    Floor_Choices = [
+        ('First Floor', 'First Floor'),
+        ('Second Floor', 'Second Floor'),
+        ('Third Floor', 'Third Floor'),
+    ]
     room_name = models.CharField(max_length=255)
-    room_description = models.TextField(blank=True, null=True)
-    room_type = models.CharField(max_length=10, choices=ROOM_TYPE_CHOICES)
-    availability_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    room_type = models.CharField(max_length=40, choices=ROOM_TYPE_CHOICES)
+    room_category = models.CharField(max_length=10, choices= Room_Category_Choices, default='Regular')
+    availability_status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='Vacant')
+    building = models.CharField(max_length=20, choices=Building_Choices,default='New Building')
+    floor = models.CharField(max_length=20, choices=Floor_Choices,default='First Floor')
     
     def __str__(self):
         return self.room_name
     
-    
+     
 # Pricing Table
 class Pricing(models.Model):
     USER_TYPE_CHOICES = [
@@ -61,15 +79,15 @@ class Guest(models.Model):
     ]
     
     name = models.CharField(max_length=100)
+    office=models.CharField(max_length=100, blank=True, null=True)
     designation=models.CharField(max_length=50, blank=True, null=True)
-    # office=models.CharField(max_length=100, blank=True, null=True)
     user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES, default='Government Officer')
     nid = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=50, null=True, blank =True)
     phone = models.CharField(max_length=20, blank=True, null= True)
     check_in_date = models.DateTimeField(blank=True, null=True)
     check_out_date = models.DateTimeField(blank=True, null=True)
-    total_person = models.IntegerField()
+    total_person = models.IntegerField(blank=True, null=True)
     motive_of_visiting = models.TextField(blank=True, null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     total_days = models.IntegerField(editable=False, null=True, blank=True)
@@ -172,7 +190,12 @@ class CheckoutSummary(models.Model):
         self.total_rental_cost = self.guest.total_rental_price
         self.total_food_cost = sum([food.price for food in Food.objects.filter(guest=self.guest)])  # Assuming the food cost is stored in the Food model
         self.total_other_cost = sum([cost.price for cost in OtherCost.objects.filter(guest=self.guest)])
-        print(self.total_food_cost)
+        if not self.payment_id:
+                current_date = datetime.now().strftime("%d%m%y")
+                last_id = CheckoutSummary.objects.latest('id').id if CheckoutSummary.objects.exists() else 0
+                unique_id = f"{current_date}.{last_id + 1}"
+                self.payment_id = unique_id
+                print(f"Generated payment_id: {self.payment_id}")
         # Calculate the grand total including the other cost
         self.grand_total = self.total_rental_cost + self.total_food_cost + self.total_other_cost
         super(CheckoutSummary, self).save(*args, **kwargs)
