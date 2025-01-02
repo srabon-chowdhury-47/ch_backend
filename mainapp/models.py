@@ -82,6 +82,7 @@ class Guest(models.Model):
     name = models.CharField(max_length=100)
     office=models.CharField(max_length=100, blank=True, null=True)
     designation=models.CharField(max_length=50, blank=True, null=True)
+    # office=models.CharField(max_length=100, blank=True, null=True)
     user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES, default='Government Officer')
     nid = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=50, null=True, blank =True)
