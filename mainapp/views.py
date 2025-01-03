@@ -22,13 +22,11 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
         return [AllowAny()]  # Allow everyone to view rooms
 
 class RoomRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
-    permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
 
-    # def get_object(self):
-    #     """Override to retrieve the room object based on the pk"""
-    #     return super().get_object()
+
 
 class PricingViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]  # Only authenticated users can access
@@ -37,10 +35,9 @@ class PricingViewSet(viewsets.ModelViewSet):
     
 from django.core.mail import EmailMultiAlternatives 
 class BookAPIView(generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticated]  # Only authenticated users can access
-
-    permission_classes = [AllowAny]  
-    queryset = Guest.objects.all().order_by('-check_in_date')
+    permission_classes = [IsAuthenticated]  # Only authenticated users can access
+ 
+    queryset = Guest.objects.filter()
     serializer_class = BookSerializer
     
     def perform_create(self, serializer):
@@ -77,14 +74,14 @@ class BookAPIView(generics.ListCreateAPIView):
         msg = EmailMultiAlternatives(subject, text_content, from_email,recipient_list)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        # send_mail(
-        #     subject,
-        #     message,
-        #     settings.EMAIL_HOST_USER,
-        #     recipient_list,
-        #     fail_silently=False,
-        # )
         
+        
+       
+class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Guest.objects.all()
+    serializer_class = BookSerializer
+         
 class CheckOutView(generics.ListCreateAPIView):
     queryset = CheckoutSummary.objects.all()
     serializer_class = CheckoutSummarySerializer
