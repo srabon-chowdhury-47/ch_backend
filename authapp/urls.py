@@ -17,7 +17,6 @@ urlpatterns = [
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
     path('reset-password-link/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(),name='reset-password-link'),
     path('password_reset_complete/',auth_views.PasswordResetCompleteView.as_view(),name='password-reset-complete'),
+    path('contact/', ContactView.as_view(), name='contact'),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
