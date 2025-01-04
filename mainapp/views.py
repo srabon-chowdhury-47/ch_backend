@@ -142,7 +142,7 @@ class CheckOutView(generics.ListCreateAPIView):
         
         guest = checkout_summary.guest
         room = guest.room  
-        room.availability_status = 'Needs clean'
+        room.availability_status = 'Needs Housekeeping'
         room.save()
 
         # Send a confirmation email
