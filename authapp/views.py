@@ -30,9 +30,16 @@ class IsAdmin(BasePermission):
 class HonourBoardListCreateView(generics.ListCreateAPIView):
     queryset = HonourBoard.objects.all().order_by('-joining_date')
     serializer_class = HonourBoardSerializer
+    
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]  # Require authentication for POST
+        return [AllowAny()]  # Allow anyone to access GET
+    
 
 # Retrieve, Update, and Delete a specific HonourBoard entry
 class HonourBoardDetailView(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = [IsAuthenticated]
     queryset = HonourBoard.objects.all()
     serializer_class = HonourBoardSerializer
     
@@ -69,11 +76,12 @@ class UserRegistrationView(ListCreateAPIView):
 
 
 class StaffListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAdmin]
     queryset = User.objects.all()
     serializer_class = StaffApproveSerializer
 
 class StaffApproveView(generics.UpdateAPIView):
-    # permission_classes = [IsAdmin] 
+    permission_classes = [IsAdmin] 
     queryset = User.objects.all()
     serializer_class = StaffApproveSerializer
 
@@ -94,8 +102,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 class PasswordChangeView(APIView):
-    # permission_classes=[AllowAny]
-
+    permission_classes = [IsAuthenticated]
     def put(self, request):
             serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
@@ -116,6 +123,7 @@ class UserProfileView(APIView):
         return Response(serializer.data)
     
 class ForgotPasswordView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         email = request.data.get("email")
         username = request.data.get("username")
@@ -143,3 +151,12 @@ class ForgotPasswordView(APIView):
         )
 
         return Response({"message": "Password reset email sent."}, status=status.HTTP_200_OK)
+
+
+class ContactView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Contact form submitted successfully."}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

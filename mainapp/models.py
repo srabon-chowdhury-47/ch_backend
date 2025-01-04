@@ -48,18 +48,19 @@ class Room(models.Model):
 # Pricing Table
 class Pricing(models.Model):
     USER_TYPE_CHOICES = [
-        ('Government Officer', 'Government Officer'),
-        ('Self-Government Officer', 'Self-Government Officer'),
+        ('Government Official', 'Government Official'),
+        ('Reference', 'Reference'),
         ('Private Sector Employee', 'Private Sector Employee'),
+        ('Others', 'Others'),
     ]
     
     ROOM_TYPE_CHOICES = [
-        ('One Bed', 'One Bed'),
-        ('Two Beds', 'Two Beds'),
+        ('One King Size Bed', 'One King Size Bed'),
+        ('Two King Size Beds', 'Two King Size Beds')
     ]
     
     user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES)
-    room_type = models.CharField(max_length=10, choices=ROOM_TYPE_CHOICES)
+    room_type = models.CharField(max_length=50, choices=ROOM_TYPE_CHOICES)
     days_range = models.CharField(max_length=10, blank=True, null=True, help_text="e.g., 1-3, 4-7, or 7+")
     price_per_day = models.DecimalField(max_digits=10, decimal_places=2)
     
@@ -73,15 +74,17 @@ class Pricing(models.Model):
 # Guest Table
 class Guest(models.Model):
     USER_TYPE_CHOICES = [
-        ('Government Officer', 'Government Officer'),
-        ('Self-Government Officer', 'Self-Government Officer'),
+        ('Government Official', 'Government Official'),
+        ('Reference', 'Reference'),
         ('Private Sector Employee', 'Private Sector Employee'),
+        ('Others', 'Others'),
+
     ]
     
     name = models.CharField(max_length=100)
     office=models.CharField(max_length=100, blank=True, null=True)
     designation=models.CharField(max_length=50, blank=True, null=True)
-    user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES, default='Government Officer')
+    user_type = models.CharField(max_length=30, choices=USER_TYPE_CHOICES, default='Government Official')
     nid = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=50, null=True, blank =True)
     phone = models.CharField(max_length=20, blank=True, null= True)
@@ -120,7 +123,7 @@ class Guest(models.Model):
                 price_per_day = pricing.price_per_day
                 
                 # Skip entries with a None value for days_range
-                if user_type == 'Private Sector Employee': 
+                if user_type == 'Private Sector Employee' or user_type == 'Others':
                     total_cost += price_per_day * remaining_days
                     break
 
@@ -183,6 +186,7 @@ class CheckoutSummary(models.Model):
     grand_total = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
     payment_status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Completed', 'Completed')], default='Pending')
     payment_id = models.CharField(max_length=255, blank=True, null=True)
+    bill_by = models.CharField(max_length=100, blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):

@@ -135,11 +135,11 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'CircuitHouse',
+#         'NAME': 'circuithouse',
 #         'USER': 'ndcjashore1',
 #         'PASSWORD': '123456NdcJ',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'HOST': '86.48.3.219',  
+#         'PORT': '5432', 
 #     }
 # }
 
