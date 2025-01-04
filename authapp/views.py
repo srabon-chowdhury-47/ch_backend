@@ -151,3 +151,12 @@ class ForgotPasswordView(APIView):
         )
 
         return Response({"message": "Password reset email sent."}, status=status.HTTP_200_OK)
+
+
+class ContactView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Contact form submitted successfully."}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

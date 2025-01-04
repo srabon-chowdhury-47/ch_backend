@@ -37,8 +37,13 @@ from django.core.mail import EmailMultiAlternatives
 class BookAPIView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]  # Only authenticated users can access
  
-    queryset = Guest.objects.filter()
+    # queryset = Guest.objects.filter()
     serializer_class = BookSerializer
+    
+    def get_queryset(self):
+        return Guest.objects.exclude(
+            id__in=CheckoutSummary.objects.values_list('guest_id', flat=True)
+        )
     
     def perform_create(self, serializer):
         
@@ -110,6 +115,7 @@ class CheckOutView(generics.ListCreateAPIView):
         try:
             guest_id = request.data.get("guest_id")
             payment_status = request.data.get("paymentStatus")
+            bill_by = request.data.get("username")
 
             print(guest_id, payment_status) 
 
@@ -119,6 +125,7 @@ class CheckOutView(generics.ListCreateAPIView):
             checkout_summary = CheckoutSummary.objects.create(
                 guest=guest,
                 payment_status=payment_status,
+                bill_by = bill_by
             )
 
             self.perform_create(checkout_summary)
@@ -135,7 +142,7 @@ class CheckOutView(generics.ListCreateAPIView):
         
         guest = checkout_summary.guest
         room = guest.room  
-        room.availability_status = 'Needs clean'
+        room.availability_status = 'Needs Housekeeping'
         room.save()
 
         # Send a confirmation email
