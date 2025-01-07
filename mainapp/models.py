@@ -35,7 +35,7 @@ class Room(models.Model):
         ('Third Floor', 'Third Floor'),
     ]
     
-    room_name = models.CharField(max_length=255)
+    room_name = models.CharField(max_length=50)
     room_type = models.CharField(max_length=50, choices=ROOM_TYPE_CHOICES) 
     room_category = models.CharField(max_length=50, choices=Room_Category_Choices, default='Regular')
     availability_status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Vacant')
