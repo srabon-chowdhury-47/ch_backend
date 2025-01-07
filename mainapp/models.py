@@ -48,10 +48,10 @@ class Room(models.Model):
 # Pricing Table
 class Pricing(models.Model):
     USER_TYPE_CHOICES = [
-        ('Government Official', 'Government Official'),
+        ('Government Official', 'Govt. Official(Existing/Retd.)'),
         ('Reference', 'Reference'),
-        ('Private Sector Employee', 'Private Sector Employee'),
-        ('Others', 'Others'),
+        ('Autonomous','Autonomous/Statutary Organization'),
+        ('Private Sector Employee', 'Private Sector Employee/Others'),
     ]
     
     ROOM_TYPE_CHOICES = [
@@ -74,10 +74,10 @@ class Pricing(models.Model):
 # Guest Table
 class Guest(models.Model):
     USER_TYPE_CHOICES = [
-        ('Government Official', 'Government Official'),
+        ('Government Official', 'Govt. Official(Existing/Retd.)'),
         ('Reference', 'Reference'),
-        ('Private Sector Employee', 'Private Sector Employee'),
-        ('Others', 'Others'),
+        ('Autonomous','Autonomous/Statutary Organization'),
+        ('Private Sector Employee', 'Private Sector Employee/Others'),
 
     ]
     
@@ -123,7 +123,7 @@ class Guest(models.Model):
                 price_per_day = pricing.price_per_day
                 
                 # Skip entries with a None value for days_range
-                if user_type == 'Private Sector Employee' or user_type == 'Others':
+                if user_type == 'Private Sector Employee':
                     total_cost += price_per_day * remaining_days
                     break
 
