@@ -111,4 +111,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ['id', 'name', 'email', 'message', 'created_at']
+        fields = ['id', 'name', 'email','phone', 'message', 'created_at']
