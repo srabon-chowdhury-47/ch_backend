@@ -60,19 +60,6 @@ class UserRegistrationView(ListCreateAPIView):
             status=status.HTTP_201_CREATED
         )
 
-# class UserRegistrationView(APIView):
-#     def post(self, request, *args, **kwargs):
-#         # Log the received data
-#         print("Received data:", request.data)
-
-#         serializer = UserRegistrationSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response({"message": "Registration successful"}, status=status.HTTP_201_CREATED)
-#         else:
-#             print("Errors:", serializer.errors)
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class StaffListCreateView(generics.ListCreateAPIView):
@@ -154,9 +141,39 @@ class ForgotPasswordView(APIView):
 
 
 class ContactView(APIView):
+    def get(self, request, *args, **kwargs):
+        """
+        Handle GET requests to retrieve all contact submissions.
+        """
+        contacts = Contact.objects.all().order_by('-created_at')  # Fetch contacts, newest first
+        serializer = ContactSerializer(contacts, many=True)  # Serialize the data
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
     def post(self, request, *args, **kwargs):
         serializer = ContactSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Contact form submitted successfully."}, status=status.HTTP_201_CREATED)
+            contact = serializer.save()
+            # Send an email
+            try:
+                # Custom reply to the user
+                user_message = (
+                        f"Hi {contact.name},\n\n"
+                        "Thanks for reaching us. Please contact us at 02477762486 for more information.\n\n"
+                        "We are happy to assist you!\n\n"
+                        "Best regards,\n"
+                        "Jashore Circuit House"
+                    )
+
+                send_mail(
+                    subject="Thank You for Contacting Us!",
+                    message=user_message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[contact.email],  # Send to the user's email
+                    fail_silently=False,
+                )
+                return Response({"message": "Contact form submitted and email sent successfully."}, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({"error": f"Contact form saved, but failed to send email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
