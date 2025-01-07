@@ -6,7 +6,7 @@ from datetime import date,datetime
 class Room(models.Model):
     STATUS_CHOICES = [
         ('Vacant', 'Vacant'),
-        ('Booked','Booked'),
+        ('Booked', 'Booked'),
         ('Occupied', 'Occupied'),
         ('Needs Housekeeping', 'Needs Housekeeping'),
         ('Needs verify', 'Needs verify'),
@@ -34,16 +34,17 @@ class Room(models.Model):
         ('Second Floor', 'Second Floor'),
         ('Third Floor', 'Third Floor'),
     ]
+    
     room_name = models.CharField(max_length=255)
-    room_type = models.CharField(max_length=40, choices=ROOM_TYPE_CHOICES)
-    room_category = models.CharField(max_length=10, choices= Room_Category_Choices, default='Regular')
-    availability_status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='Vacant')
-    building = models.CharField(max_length=20, choices=Building_Choices,default='New Building')
-    floor = models.CharField(max_length=20, choices=Floor_Choices,default='First Floor')
+    room_type = models.CharField(max_length=50, choices=ROOM_TYPE_CHOICES) 
+    room_category = models.CharField(max_length=50, choices=Room_Category_Choices, default='Regular')
+    availability_status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Vacant')
+    building = models.CharField(max_length=50, choices=Building_Choices, default='New Building') 
+    floor = models.CharField(max_length=50, choices=Floor_Choices, default='First Floor')  
     
     def __str__(self):
         return self.room_name
-    
+
      
 # Pricing Table
 class Pricing(models.Model):
