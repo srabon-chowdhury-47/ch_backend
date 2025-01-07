@@ -30,16 +30,17 @@ class Room(models.Model):
     ]
     
     Floor_Choices = [
+        ('Ground Floor', 'Ground Floor'),
         ('First Floor', 'First Floor'),
         ('Second Floor', 'Second Floor'),
-        ('Third Floor', 'Third Floor'),
+        
     ]
     room_name = models.CharField(max_length=255)
     room_type = models.CharField(max_length=40, choices=ROOM_TYPE_CHOICES)
     room_category = models.CharField(max_length=10, choices= Room_Category_Choices, default='Regular')
     availability_status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='Vacant')
     building = models.CharField(max_length=20, choices=Building_Choices,default='New Building')
-    floor = models.CharField(max_length=20, choices=Floor_Choices,default='First Floor')
+    floor = models.CharField(max_length=20, choices=Floor_Choices,default='Ground Floor')
     
     def __str__(self):
         return self.room_name
