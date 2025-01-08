@@ -177,3 +177,8 @@ class ContactView(APIView):
                 return Response({"error": f"Contact form saved, but failed to send email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class StaffProfileView(generics.ListCreateAPIView):
+    queryset = StaffProfile.objects.all()
+    serializer_class = StaffProfileSerializer

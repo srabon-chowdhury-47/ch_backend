@@ -38,13 +38,12 @@ class User(AbstractUser):
 
 class StaffProfile(models.Model):
     name = models.CharField(max_length=255)
-    picture = models.ImageField(upload_to='img/')
+    picture = models.ImageField(upload_to='img/',null=True, blank=True)
     designation = models.CharField(max_length=255)
-    phone = models.CharField(max_length=15)
-    email = models.EmailField()
-    joining_date = models.DateField()
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    joining_date = models.DateField(null=True, blank=True)
     ending_date = models.DateField(blank=True, null=True)
-    remarks = models.TextField(blank=True, null=True)
 
 
 # Honour Board
