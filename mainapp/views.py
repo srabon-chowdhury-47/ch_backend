@@ -108,7 +108,7 @@ class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
          
 class CheckOutView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = CheckoutSummary.objects.all()
+    queryset = CheckoutSummary.objects.all().order_by('-created_at')
     serializer_class = CheckoutSummarySerializer
 
     def create(self, request, *args, **kwargs):
