@@ -51,7 +51,7 @@ class Room(models.Model):
 class Pricing(models.Model):
     USER_TYPE_CHOICES = [
         ('Government Official', 'Govt. Official(Existing/Retd.)'),
-        ('Reference', 'Reference'),
+        # ('Reference', 'Reference'),
         ('Autonomous','Autonomous/Statutary Organization'),
         ('Private Sector Employee', 'Private Sector Employee/Others'),
     ]
@@ -77,7 +77,7 @@ class Pricing(models.Model):
 class Guest(models.Model):
     USER_TYPE_CHOICES = [
         ('Government Official', 'Govt. Official(Existing/Retd.)'),
-        ('Reference', 'Reference'),
+        # ('Reference', 'Reference'),
         ('Autonomous','Autonomous/Statutary Organization'),
         ('Private Sector Employee', 'Private Sector Employee/Others'),
 
