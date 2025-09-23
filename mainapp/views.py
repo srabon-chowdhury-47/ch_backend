@@ -1,95 +1,88 @@
 from django.shortcuts import render
-from rest_framework import generics,viewsets
+from rest_framework import generics, viewsets, status
 from .models import *
 from .serializers import *
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
-from rest_framework.permissions import AllowAny, IsAuthenticated
-import datetime
-from django.template.loader import render_to_string
-from rest_framework import generics, status
+from rest_framework.permissions import AllowAny, AllowAny
+from rest_framework.decorators import api_view, permission_classes   # ✅ added
 from rest_framework.response import Response
+from django.template.loader import render_to_string
+import datetime
+from datetime import date
 
+
+# ------------------- Room APIs -------------------
 class RoomListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]  # Only authenticated users can access
+    permission_classes = [AllowAny]  # Only authenticated users can access
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-    # def get_permissions(self):
-    #     """Override to set different permissions for GET and POST methods"""
-    #     if self.request.method == 'POST':
-    #         return [IsAuthenticated()]  # Only authenticated users can create rooms
-    #     return [AllowAny()]  # Allow everyone to view rooms
 
 class RoomRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [IsAuthenticated]  # Only authenticated users can modify or view room details
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
 
-
+# ------------------- Pricing APIs -------------------
 class PricingViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]  # Only authenticated users can access
+    permission_classes = [AllowAny]  # Only authenticated users can access
     queryset = Pricing.objects.all()
     serializer_class = PriceSerializer
-    
-from django.core.mail import EmailMultiAlternatives 
+
+
+# ------------------- Booking APIs -------------------
 class BookAPIView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]  # Only authenticated users can access
- 
-    # queryset = Guest.objects.filter()
+    permission_classes = [AllowAny]
     serializer_class = BookSerializer
-    
+
     def get_queryset(self):
         return Guest.objects.exclude(
             id__in=CheckoutSummary.objects.values_list('guest_id', flat=True)
         )
-    
+
     def perform_create(self, serializer):
-        
         guest = serializer.save()
-        room = guest.room  
+        room = guest.room
         room.availability_status = 'Booked'
         room.save()
 
-        # Send a confirmation email
+        # Send confirmation email
         self.send_confirmation_email(guest)
-        
 
     def send_confirmation_email(self, guest):
-        
         context = {
-        'guest': guest,
-        'current_time': datetime.datetime.now()
-         }
+            'guest': guest,
+            'current_time': datetime.datetime.now()
+        }
 
-        html_content = render_to_string(
-            'Home/email_msg.html',
-            context
-        )
+        html_content = render_to_string('Home/email_msg.html', context)
         subject = "Room Booking Confirmation"
         text_content = f"""
-        Dear {guest.name},\n\n" "Your room booking at the Circuit House is confirmed. We look forward to hosting you.
-        \n\n" "Best regards,\nCircuit House Management"
+        Dear {guest.name},
+
+        Your room booking at the Circuit House is confirmed. We look forward to hosting you.
+
+        Best regards,
+        Circuit House Management
         {datetime.datetime.now()}
         """
-        
+
         from_email = settings.EMAIL_HOST_USER
         recipient_list = [guest.email]
-        msg = EmailMultiAlternatives(subject, text_content, from_email,recipient_list)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        
-        
-       
+
+
 class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Guest.objects.all()
     serializer_class = BookSerializer
-    
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        previous_room = instance.room 
+        previous_room = instance.room
 
         response = super().update(request, *args, **kwargs)
 
@@ -105,9 +98,11 @@ class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
             updated_room.save()
 
         return response
-         
+
+
+# ------------------- Checkout APIs -------------------
 class CheckOutView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = CheckoutSummary.objects.all().order_by('-created_at')
     serializer_class = CheckoutSummarySerializer
 
@@ -117,15 +112,13 @@ class CheckOutView(generics.ListCreateAPIView):
             payment_status = request.data.get("paymentStatus")
             bill_by = request.data.get("username")
 
-            print(guest_id, payment_status) 
-
             guest = Guest.objects.get(id=guest_id)
 
             # Create CheckoutSummary instance
             checkout_summary = CheckoutSummary.objects.create(
                 guest=guest,
                 payment_status=payment_status,
-                bill_by = bill_by
+                bill_by=bill_by
             )
 
             self.perform_create(checkout_summary)
@@ -139,57 +132,77 @@ class CheckOutView(generics.ListCreateAPIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, checkout_summary):
-        
         guest = checkout_summary.guest
-        room = guest.room  
+        room = guest.room
         room.availability_status = 'Needs Housekeeping'
         room.save()
 
-        # Send a confirmation email
+        # Send checkout confirmation email
         self.send_confirmation_email(guest)
-        
 
     def send_confirmation_email(self, guest):
-        
         context = {
-        'guest': guest,
-        'current_time': datetime.datetime.now()
-         }
+            'guest': guest,
+            'current_time': datetime.datetime.now()
+        }
 
-        html_content = render_to_string(
-            'Home/checkout_email.html',
-            context
-        )
+        html_content = render_to_string('Home/checkout_email.html', context)
         subject = "Checkout Confirmation"
-
         text_content = f"""
-        Dear {guest.name},\n\n" "Your room booking at the Circuit House is confirmed. We look forward to hosting you.
-        \n\n" "Best regards,\nCircuit House Management"
+        Dear {guest.name},
+
+        Your checkout from the Circuit House has been processed successfully.
+
+        Best regards,
+        Circuit House Management
         {datetime.datetime.now()}
         """
-        
+
         from_email = settings.EMAIL_HOST_USER
         recipient_list = [guest.email]
-        msg = EmailMultiAlternatives(subject, text_content, from_email,recipient_list)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-    
 
+
+# ------------------- Food Order APIs -------------------
 class FoodOrderAPIView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]  # Only authenticated users can access
-
+    permission_classes = [AllowAny]
     queryset = Food.objects.all()
     serializer_class = FoodSerializer
 
     def perform_create(self, serializer):
-        serializer.save(date=date.today())  # Automatically set the current date
+        serializer.save(date=date.today())
 
+
+# ------------------- Other Cost APIs -------------------
 class OtherCostAPIView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]  # Only authenticated users can access
-
+    permission_classes = [AllowAny]
     queryset = OtherCost.objects.all()
     serializer_class = OtherCostSerializer
-    # permission_classes = [IsAuthenticated]  # Require authentication for ordering food
 
     def perform_create(self, serializer):
-        serializer.save(date=date.today())  # Automatically set the current date
+        serializer.save(date=date.today())
+
+
+# ------------------- Public Guest Bill API -------------------
+@api_view(['GET'])
+@permission_classes([AllowAny])  # public access
+def GuestBillView(request, nid):
+    try:
+        guest = Guest.objects.get(nid=nid)
+        checkout = CheckoutSummary.objects.filter(guest=guest).last()
+
+        guest_data = BookSerializer(guest).data
+        if checkout:
+            checkout_data = CheckoutSummarySerializer(checkout).data
+        else:
+            checkout_data = {"message": "Checkout not completed yet."}
+
+        return Response({
+            "guest": guest_data,
+            "bill": checkout_data
+        }, status=status.HTTP_200_OK)
+
+    except Guest.DoesNotExist:
+        return Response({"error": "No guest found with this NID."}, status=status.HTTP_404_NOT_FOUND)

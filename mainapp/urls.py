@@ -18,4 +18,5 @@ urlpatterns = [
     path('food/',FoodOrderAPIView.as_view(),name='food'),
     path('other-cost/',OtherCostAPIView.as_view(),name='others'),
     path('checkout/',CheckOutView.as_view(),name='checkout'),
+    path('guest-bill/<str:nid>/', GuestBillView, name='guest-bill'),
 ]
